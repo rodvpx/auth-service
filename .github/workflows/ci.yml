@@ -1,0 +1,52 @@
+name: CI Spring Boot
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [closed]
+
+jobs:
+  build-and-test:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Grant execute permission for mvnw
+        run: chmod +x mvnw
+
+      - name: Start postgres
+        run: docker compose up -d postgres
+
+      - name: Wait for postgres healthcheck
+        run: |
+          for i in {1..30}; do
+            STATUS=$(docker inspect --format='{{json .State.Health.Status}}' auth-postgres)
+            if [ "$STATUS" = "\"healthy\"" ]; then
+              echo "Postgres is healthy"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Postgres did not become healthy in time"
+          docker compose logs postgres
+          exit 1
+
+      - name: Run tests and build
+        run: ./mvnw clean verify
+
+      - name: Build Docker image
+        run: docker build -t auth-service:${{ github.sha }} .
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v
