@@ -10,6 +10,6 @@ public class UsersController {
 
     @GetMapping
     public String printMessage() {
-        return "Hello World!";
+        return "Testando GitHub Actions";
     }
 }
