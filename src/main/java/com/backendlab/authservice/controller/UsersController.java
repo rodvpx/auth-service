@@ -8,6 +8,7 @@ import com.backendlab.authservice.service.AuthService;
 import com.backendlab.authservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,5 +29,10 @@ public class UsersController {
     public AuthResponse login(@RequestBody @Valid LoginRequest request) {
 
         return authService.login(request);
+    }
+
+    @GetMapping("/me")
+    public String me(Authentication authentication) {
+        return "Usuário autenticado: " + authentication.getName();
     }
 }
