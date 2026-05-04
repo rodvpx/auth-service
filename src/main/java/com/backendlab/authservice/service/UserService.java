@@ -5,6 +5,7 @@ import com.backendlab.authservice.entity.Role;
 import com.backendlab.authservice.entity.User;
 import com.backendlab.authservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class UserService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     public User register(RegisterRequest request) {
 
@@ -24,7 +26,7 @@ public class UserService {
         User user = User.builder()
                 .name(request.name())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .createdAt(LocalDateTime.now())
                 .role(Role.USER)
                 .build();
