@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:16
     container_name: auth-postgres
-    restart: always
+    restart: no
     environment:
       POSTGRES_DB: authdb
       POSTGRES_USER: authuser
@@ -29,7 +29,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: authpass
     ports:
       - "8080:8080"
-    restart: always
+    restart: no
 
 volumes:
   postgres-data:
