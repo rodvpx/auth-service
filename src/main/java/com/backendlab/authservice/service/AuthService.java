@@ -1,5 +1,6 @@
 package com.backendlab.authservice.service;
 
+import com.backendlab.authservice.dto.AuthResponse;
 import com.backendlab.authservice.dto.LoginRequest;
 import com.backendlab.authservice.entity.User;
 import com.backendlab.authservice.repository.UserRepository;
@@ -13,8 +14,10 @@ public class AuthService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public User login(LoginRequest request) {
+
+    public AuthResponse login(LoginRequest request) {
 
         User user = repository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
@@ -23,6 +26,8 @@ public class AuthService {
             throw new RuntimeException("Credenciais inválidas");
         }
 
-        return user;
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new AuthResponse(token);
     }
 }
