@@ -3,6 +3,7 @@ package com.backendlab.authservice.service;
 import com.backendlab.authservice.dto.RegisterRequest;
 import com.backendlab.authservice.entity.Role;
 import com.backendlab.authservice.entity.User;
+import com.backendlab.authservice.exception.UserAlreadyExistsException;
 import com.backendlab.authservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,7 @@ public class UserService {
     public User register(RegisterRequest request) {
 
         if (repository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new UserAlreadyExistsException("Email já cadastrado");
         }
 
         User user = User.builder()
