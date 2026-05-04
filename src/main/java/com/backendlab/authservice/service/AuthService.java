@@ -5,6 +5,7 @@ import com.backendlab.authservice.dto.LoginRequest;
 import com.backendlab.authservice.entity.User;
 import com.backendlab.authservice.exception.InvalidCredentialsException;
 import com.backendlab.authservice.repository.UserRepository;
+import com.backendlab.authservice.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class AuthService {
             throw new InvalidCredentialsException();
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user);
 
         return new AuthResponse(token);
     }
