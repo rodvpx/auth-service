@@ -3,6 +3,7 @@ package com.backendlab.authservice.service;
 import com.backendlab.authservice.dto.AuthResponse;
 import com.backendlab.authservice.dto.LoginRequest;
 import com.backendlab.authservice.entity.User;
+import com.backendlab.authservice.exception.InvalidCredentialsException;
 import com.backendlab.authservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,10 +21,10 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = repository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("Credenciais inválidas");
+            throw new InvalidCredentialsException();
         }
 
         String token = jwtService.generateToken(user.getEmail());
