@@ -1,5 +1,6 @@
 package com.backendlab.authservice.controller;
 
+import com.backendlab.authservice.dto.AuthResponse;
 import com.backendlab.authservice.dto.LoginRequest;
 import com.backendlab.authservice.dto.RegisterRequest;
 import com.backendlab.authservice.entity.User;
@@ -24,7 +25,7 @@ public class UsersController {
     }
 
     @PostMapping("/login")
-    public User login(@RequestBody @Valid LoginRequest request) {
+    public AuthResponse login(@RequestBody @Valid LoginRequest request) {
 
         return authService.login(request);
     }
