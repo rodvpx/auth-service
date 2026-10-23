@@ -3,7 +3,7 @@ package com.backendlab.authservice.controller;
 import com.backendlab.authservice.dto.AuthResponse;
 import com.backendlab.authservice.dto.LoginRequest;
 import com.backendlab.authservice.dto.RegisterRequest;
-import com.backendlab.authservice.entity.User;
+import com.backendlab.authservice.dto.UserResponse;
 import com.backendlab.authservice.service.AuthService;
 import com.backendlab.authservice.service.UserService;
 import jakarta.validation.Valid;
@@ -22,8 +22,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public User register(@RequestBody @Valid RegisterRequest request) {
-        return userService.register(request);
+    public UserResponse register(@RequestBody @Valid RegisterRequest request) {
+        return UserResponse.from(userService.register(request));
     }
 
     @PostMapping("/login")
