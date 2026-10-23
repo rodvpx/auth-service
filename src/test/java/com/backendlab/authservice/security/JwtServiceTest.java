@@ -12,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JwtServiceTest {
 
@@ -83,5 +84,23 @@ class JwtServiceTest {
     @Test
     void isTokenValidDeveRetornarFalseParaTokenInvalido() {
         assertThat(jwtService.isTokenValid("token-invalido")).isFalse();
+    }
+
+    @Test
+    void validateSecretDeveFalharQuandoSegredoEstiverEmBranco() {
+        ReflectionTestUtils.setField(jwtService, "secret", " ");
+
+        assertThatThrownBy(jwtService::validateSecret)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("JWT_SECRET não configurado");
+    }
+
+    @Test
+    void validateSecretDeveFalharQuandoSegredoForMenorQue32Bytes() {
+        ReflectionTestUtils.setField(jwtService, "secret", "segredo-curto");
+
+        assertThatThrownBy(jwtService::validateSecret)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("pelo menos 32 bytes");
     }
 }
