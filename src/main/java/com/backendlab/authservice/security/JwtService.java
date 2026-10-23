@@ -2,6 +2,7 @@ package com.backendlab.authservice.security;
 
 import com.backendlab.authservice.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -31,6 +32,7 @@ public class JwtService {
         claims.put("role", user.getRole().name());
 
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -43,7 +45,11 @@ public class JwtService {
     }
     
     public boolean isTokenValid(String token) {
-        return !getClaims(token).getExpiration().before(new Date());
+        try {
+            return !getClaims(token).getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
     
     private Claims getClaims(String token) {
