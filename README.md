@@ -81,16 +81,15 @@ Requisição (`application/json`):
 
 `name` e `password` não podem estar em branco; `email` deve ter formato de e-mail e também é obrigatório no banco. O cadastro armazena a senha com BCrypt e define o perfil `USER`.
 
-Resposta atual (`200 OK`): objeto do usuário criado, com `id` UUID, `name`, `email`, `password`, `role` e `createdAt`. **Atenção:** a implementação atual retorna a entidade completa e, portanto, inclui o hash BCrypt no campo `password`. Esse dado não deve ser exposto; a resposta deveria ser limitada a um DTO sem senha.
+Resposta (`200 OK`): `id` UUID, `name`, `email`, `role` e `createdAt`. A senha nunca é retornada.
 
-Exemplo resumido da resposta atual:
+Exemplo da resposta:
 
 ```json
 {
 	"id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
 	"name": "Maria Silva",
 	"email": "maria@example.com",
-	"password": "$2a$10$<hash-bcrypt>",
 	"role": "USER",
 	"createdAt": "2026-10-21T12:34:56"
 }
@@ -113,11 +112,11 @@ Resposta (`200 OK`):
 
 ```json
 {
-	"acessToken": "<jwt>"
+	"accessToken": "<jwt>"
 }
 ```
 
-O nome `acessToken` é o campo utilizado atualmente pela API. E-mail ou senha inválidos retornam `401 Unauthorized`.
+E-mail ou senha inválidos retornam `401 Unauthorized`.
 
 ### `GET /users/me`
 
