@@ -11,7 +11,12 @@ RUN ./mvnw -q -DskipTests clean package
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-COPY --from=build /app/target/*.jar app.jar
+RUN groupadd --system spring \
+    && useradd --system --gid spring --home-dir /app --shell /usr/sbin/nologin spring
+
+COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
+
+USER spring:spring
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
