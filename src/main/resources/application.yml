@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/authdb
-    username: authuser
-    password: authpass
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/authdb}
+    username: ${DB_USER:authuser}
+    password: ${DB_PASSWORD:authpass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,8 +14,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    show-sql: true
 
 jwt:
-  secret: my-super-secret-key-very-long-and-safe-123456789
-  expiration: 3600000
+  secret: ${JWT_SECRET:dev-only-secret-key-change-me-1234567890}
+  expiration: ${JWT_EXPIRATION:3600000}
+
+app:
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+    required: false

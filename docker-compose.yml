@@ -4,15 +4,15 @@ services:
     container_name: auth-postgres
     restart: no
     environment:
-      POSTGRES_DB: authdb
-      POSTGRES_USER: authuser
-      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: ${POSTGRES_DB:-authdb}
+      POSTGRES_USER: ${DB_USER:?Defina DB_USER no arquivo .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD no arquivo .env}
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U authuser -d authdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:?} -d ${POSTGRES_DB:-authdb}"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -24,9 +24,14 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/authdb
-      SPRING_DATASOURCE_USERNAME: authuser
-      SPRING_DATASOURCE_PASSWORD: authpass
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_URL: ${DB_URL:?Defina DB_URL no arquivo .env}
+      DB_USER: ${DB_USER:?Defina DB_USER no arquivo .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD no arquivo .env}
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET no arquivo .env}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-3600000}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
     ports:
       - "8080:8080"
     restart: no
