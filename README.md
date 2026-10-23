@@ -1,5 +1,7 @@
 # Auth Service API
 
+[![CI Spring Boot](https://github.com/rodvpx/auth-service/actions/workflows/ci.yml/badge.svg)](https://github.com/rodvpx/auth-service/actions/workflows/ci.yml)
+
 API REST para cadastro de usuários, autenticação com JWT e acesso a recursos protegidos por perfil.
 
 ## Tecnologias
